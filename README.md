@@ -13,3 +13,7 @@ make
 # Other Commands
 make test, builds and runs test.cpp
 make run, builds and runs main.cpp
+
+# Dependencies
+CMake
+SFML 3.0

@@ -3,15 +3,17 @@
 
 #include <iostream>
 
-class Vec2D {
-  private:  
+class Vec2D
+{
+  public:
+    // Fields
     float x;
     float y;
-
-  public:
+    
     // Constructors
-    Vec2D(float x, float y);
-    Vec2D(const Vec2D& other);
+    Vec2D ();
+    Vec2D (float x, float y);
+    Vec2D (const Vec2D& other);
 
     // Operators
     Vec2D operator* (float scalar) const;
