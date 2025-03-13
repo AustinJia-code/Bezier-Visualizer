@@ -3,9 +3,11 @@
 #include <math.h>
 #include "Vec2D.hpp"
 
+float SCALE = 2.0;
+
 /*************** Canvas *****************/ 
-unsigned int CANVAS_MAX_DIM_PX = 800;
-sf::Color lightGrey(80, 80, 80);
+unsigned int CANVAS_MAX_DIM_PX = 800 * SCALE;
+sf::Color lightGrey (80, 80, 80);
 
 /*************** Graph *****************/ 
 int X_MIN = -1;
@@ -32,8 +34,10 @@ sf::Vector2f VEC_TO_CANVAS (const Vec2D vec) {
 }
 
 /*************** Bezier *****************/ 
-unsigned int R_PX = 2;
-unsigned int W_PX = 3;
+// Circle Radius
+unsigned int R_PX = 3 * SCALE;
+// Line Weight
+unsigned int W_PX = 3 * SCALE;
 float STEP = 0.001;
 
 /*************** Misc Helpers *****************/ 
@@ -50,7 +54,7 @@ void buildLine (sf::ConvexShape& line, sf::Vector2f start, sf::Vector2f end, flo
   sf::Vector2f normal (-direction.y, direction.x);
 
   // Scale normal to half the thickness
-  normal *= (thickness / 2);
+  normal *= (thickness * SCALE / 2);
 
   // Set up a ConvexShape with 4 points (quad)
   line.setPointCount(4);

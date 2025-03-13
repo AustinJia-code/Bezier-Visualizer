@@ -29,14 +29,14 @@ Vec2D Bezier::getPointAtT (float t, bool override)
 
   // TODO: Free all children
 
+  this->t = t;
   std::vector<Vec2D> child_vec;
 
   // add recursive push
   for (int i = 0; i < control_points.size() - 1; i++)
-    child_vec.push_back (Vec2D::lerp (
-                                    control_points[i],
-                                    control_points[i + 1],
-                                    t));
+    child_vec.push_back (Vec2D::lerp (control_points[i],
+                                      control_points[i + 1],
+                                      t));
 
   // Create child and return point
   child = new Bezier (child_vec, t);
