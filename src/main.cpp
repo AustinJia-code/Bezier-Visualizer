@@ -41,6 +41,15 @@ void draw_grid (sf::RenderTexture& background)
   }
 }
 
+void draw_point (sf:: RenderTexture& foreground, sf::Vector2f pos, int size)
+{
+  sf::CircleShape point (size);
+  point.setOrigin(size, size);
+  point.setPosition (pos);
+  point.setFillColor (sf::Color::Red);
+  foreground.draw (point);
+}
+
 void draw_control_lines (sf::RenderTexture& foreground, const Bezier& bezier, int color, int color_step)
 {
   const std::vector<Vec2D> control_points = bezier.getControlPoints();
@@ -48,7 +57,7 @@ void draw_control_lines (sf::RenderTexture& foreground, const Bezier& bezier, in
     sf::ConvexShape line;
     sf::Vector2f start = VEC_TO_CANVAS (control_points[i]);
     sf::Vector2f end = VEC_TO_CANVAS (control_points[i + 1]);
-    sf::Color clr = color == 0 ? sf::Color::Green : sf::Color (color, 200, 200);
+    sf::Color clr = color == 0 ? sf::Color::Green : sf::Color (color, 256 - color, 0);
     buildLine (line, start, end, W_PX, clr);
     foreground.draw(line);
   }
@@ -67,8 +76,10 @@ int main ()
   Bezier bezier (init_curve());
 
   // Init window
-  sf::RenderWindow window(sf::VideoMode ({X_WIDTH_PX / SCALE, Y_WIDTH_PX / SCALE}), 
-                          "Bezier Curve");
+  sf::RenderWindow window(sf::VideoMode (
+                                {static_cast<unsigned int> (X_WIDTH_PX / SCALE), 
+                                 static_cast<unsigned int> (Y_WIDTH_PX / SCALE)}), 
+                                "Bezier Curve");
   // Set a view that maintains the original coordinate system
   sf::View zoom (sf::FloatRect (0, 0, X_WIDTH_PX, Y_WIDTH_PX));
   window.setView (zoom);
@@ -107,20 +118,9 @@ int main ()
     draw_control_lines (foreground, bezier, 0, color_step);
 
     // Draw points
-    for (float t = 0; t <= time; t += STEP) {
-      sf::CircleShape point (R_PX);
-      point.setOrigin(R_PX, R_PX);
-      point.setPosition (VEC_TO_CANVAS (bezier.getPointAtT (t)));
-      point.setFillColor (sf::Color::Red);
-      foreground.draw (point);
-    }
-
-    // Draw endpoint
-    sf::CircleShape point (R_PX * 2);
-    point.setOrigin(R_PX * 2, R_PX * 2);
-    point.setPosition (VEC_TO_CANVAS (bezier.getPointAtT (time)));
-    point.setFillColor (sf::Color::Red);
-    foreground.draw (point);
+    for (float t = 0; t <= time; t += STEP)
+      draw_point (foreground, VEC_TO_CANVAS (bezier.getPointAtT (t)), R_PX);
+    draw_point (foreground, VEC_TO_CANVAS (bezier.getPointAtT (time)), R_PX * 2);
 
     // Draw foreground texture
     foreground.display();
