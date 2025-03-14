@@ -8,12 +8,14 @@ class Bezier
     Bezier* child;
     float t;
     Vec2D point;
-    Vec2D getPointAtT (float t, bool override);
+    Vec2D get_point_at_T (float t, bool override);
 
   public:
-    Bezier (const std::vector<Vec2D>& vec);
+    ~Bezier ();
     Bezier (const std::vector<Vec2D>& vec, float t);
-    Vec2D getPointAtT (float t);
-    const std::vector<Vec2D>& getControlPoints() const;
+    void set_control_points (const std::vector<Vec2D>& vec);
+    Vec2D get_point_at_T (float t);
+    const std::vector<Vec2D>& get_control_points() const;
+    std::vector<Vec2D>& get_control_points();
     const Bezier* getChild() const;
 };

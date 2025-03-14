@@ -1,8 +1,8 @@
 #include "Slider.hpp"
 
-Slider::Slider(float x, float y, float width, float height, 
-               float min, float max, float initial, float scale) 
-                : min (min), max(max), val (initial), isDragging (false)
+Slider::Slider (float x, float y, float width, float height, 
+                float min, float max, float initial, float scale) 
+                : min (min), max(max), val (initial), is_dragging (false)
 {
   width *= scale;
   height *= scale;
@@ -18,29 +18,29 @@ Slider::Slider(float x, float y, float width, float height,
   handle.setOrigin (height / 2, height / 2);
   
   // Set initial handle position
-  float handleX = x + (val - min) / (max - min) * width;
-  handle.setPosition (handleX, y + height / 2);
+  float handle_x = x + (val - min) / (max - min) * width;
+  handle.setPosition (handle_x, y + height / 2);
 }
 
-bool Slider::handleEvent(const sf::Event& event, const sf::RenderWindow& window)
+bool Slider::handle_event (const sf::Event& event, const sf::RenderWindow& window)
 {
   sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
   
   // Check for mouse press on the handle
   if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-    if (handle.getGlobalBounds().contains(mousePos)) {
-      isDragging = true;
+    if (handle.getGlobalBounds().contains (mousePos)) {
+      is_dragging = true;
       return true;
     }
   }
   
   // Check for mouse release
   if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
-    isDragging = false;
+    is_dragging = false;
   }
   
   // Handle dragging
-  if (isDragging && event.type == sf::Event::MouseMoved) {
+  if (is_dragging && event.type == sf::Event::MouseMoved) {
     // Calculate new handle position, keeping it within the track bounds
     float x = std::max(track.getPosition().x, 
               std::min(mousePos.x, track.getPosition().x + track.getSize().x));
@@ -55,7 +55,7 @@ bool Slider::handleEvent(const sf::Event& event, const sf::RenderWindow& window)
   return false;
 }
 
-float Slider::getValue() const
+float Slider::get_value() const
 {
   return val;
 }

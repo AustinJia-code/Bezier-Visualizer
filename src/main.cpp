@@ -1,7 +1,5 @@
-#include "Bezier.hpp"
+#include "Helpers.hpp"
 #include "Slider.hpp"
-#include "Constants.hpp"
-#include <array>
 #include <vector>
 
 /**
@@ -10,60 +8,47 @@
 std::vector<Vec2D> init_curve ()
 {
   std::vector<Vec2D> control_points;
-  control_points.push_back (Vec2D (0, 1));
-  control_points.push_back (Vec2D (0, 0));
-  control_points.push_back (Vec2D (1, 0));
-  control_points.push_back (Vec2D (1, 1));
-  control_points.push_back (Vec2D (4, 1));
-  control_points.push_back (Vec2D (4, -3));
+
+  control_points.push_back (Vec2D (-2, 1.5));
+  control_points.push_back (Vec2D (-2, 0.5));
+  control_points.push_back (Vec2D (-1, 0));
+  control_points.push_back (Vec2D (-1.5, 2));
+  control_points.push_back (Vec2D (2, 1.5));
+  control_points.push_back (Vec2D (1.5, -2));
+
   return control_points;
 }
 
-/**
- * Draws a unit grid onto background
- */
-void draw_grid (sf::RenderTexture& background)
+void handle_add_point (const sf::Event& event, sf::RenderWindow& window, std::vector<Vec2D>& control_points)
 {
-  for (float x = 0; x <= X_WIDTH_PX; x += UNIT_WIDTH_PX) {
-    sf::ConvexShape line;
-    sf::Vector2f start = {x, static_cast<float> (Y_TO_CANVAS (Y_MIN))};
-    sf::Vector2f end = {x, static_cast<float> (Y_TO_CANVAS (Y_MAX))};
-    buildLine (line, start, end, W_PX, lightGrey);
-    background.draw (line);
-  }
-
-  for (float y = 0; y <= Y_WIDTH_PX; y += UNIT_WIDTH_PX) {
-    sf::ConvexShape line;
-    sf::Vector2f start = {static_cast<float> (X_TO_CANVAS (X_MIN)), y};
-    sf::Vector2f end = {static_cast<float> (X_TO_CANVAS (X_MAX)), y};
-    buildLine (line, start, end, W_PX, lightGrey);
-    background.draw (line);
+  if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+    sf::Vector2i pos = sf::Mouse::getPosition (window);
+    Vec2D temp = CANVAS_TO_VEC (pos.x, pos.y);
+    if (temp.x >= X_MIN && temp.x <= X_MAX
+     && temp.y >= Y_MIN && temp.y <= Y_MAX)
+      control_points.push_back (temp);
   }
 }
 
-void draw_point (sf:: RenderTexture& foreground, sf::Vector2f pos, int size)
+void handle_remove_point (const sf::Event& event, sf::RenderWindow& window, std::vector<Vec2D>& control_points)
 {
-  sf::CircleShape point (size);
-  point.setOrigin(size, size);
-  point.setPosition (pos);
-  point.setFillColor (sf::Color::Red);
-  foreground.draw (point);
-}
+  if (sf::Mouse::isButtonPressed (sf::Mouse::Right)) {
+    sf::Vector2i pos = sf::Mouse::getPosition (window);
+    int min_index = -1;
+    float min_dist = INFINITY;
+    for (int i = 0; i < control_points.size(); i++) {
+      Vec2D click = CANVAS_TO_VEC (pos.x, pos.y);
+      Vec2D point = control_points.at (i);
+      float dist = std::hypot (click.x - point.x, click.y - point.y);
+      if (dist < min_dist) {
+        min_dist = dist;
+        min_index = i;
+      }
+    }
 
-void draw_control_lines (sf::RenderTexture& foreground, const Bezier& bezier, int color, int color_step)
-{
-  const std::vector<Vec2D> control_points = bezier.getControlPoints();
-  for (size_t i = 0; i < control_points.size() - 1; i++) {
-    sf::ConvexShape line;
-    sf::Vector2f start = VEC_TO_CANVAS (control_points[i]);
-    sf::Vector2f end = VEC_TO_CANVAS (control_points[i + 1]);
-    sf::Color clr = color == 0 ? sf::Color::Green : sf::Color (color, 256 - color, 0);
-    buildLine (line, start, end, W_PX, clr);
-    foreground.draw(line);
+    if (min_index > -1 && control_points.size() > 2 && min_dist < 0.5)
+      control_points.erase (control_points.begin() + min_index);
   }
-
-  if (bezier.getChild() != nullptr)
-    draw_control_lines (foreground, *bezier.getChild(), color + color_step, color_step);
 }
 
 int main ()
@@ -73,13 +58,14 @@ int main ()
   Slider time_slider (50, Y_WIDTH_PX - 50 * SCALE, 300, 20, 0.0, 1.0, time, SCALE);
 
   // Bezier init
-  Bezier bezier (init_curve());
+  Bezier bezier (init_curve(), time);
 
   // Init window
-  sf::RenderWindow window(sf::VideoMode (
-                                {static_cast<unsigned int> (X_WIDTH_PX / SCALE), 
-                                 static_cast<unsigned int> (Y_WIDTH_PX / SCALE)}), 
-                                "Bezier Curve");
+  sf::RenderWindow window (sf::VideoMode (
+                                 static_cast<unsigned int> (X_WIDTH_PX / SCALE), 
+                                 static_cast<unsigned int> (Y_WIDTH_PX / SCALE)), 
+                                 "Bezier Curve",
+                                 sf::Style::Titlebar);
   // Set a view that maintains the original coordinate system
   sf::View zoom (sf::FloatRect (0, 0, X_WIDTH_PX, Y_WIDTH_PX));
   window.setView (zoom);
@@ -87,10 +73,6 @@ int main ()
   // Create and draw background grid
   sf::RenderTexture background;
   background.create (X_WIDTH_PX, Y_WIDTH_PX);
-  background.clear(sf::Color::White);
-  draw_grid (background); 
-  background.display();
-  sf::Sprite bgSprite (background.getTexture());
 
   // Create foreground layer
   sf::RenderTexture foreground;
@@ -103,24 +85,38 @@ int main ()
       if (event.type == sf::Event::Closed)
         window.close();
 
+      if (event.type == sf::Event::Resized) {
+        // Lock the window size
+        window.setSize (sf::Vector2u (static_cast<unsigned int> (X_WIDTH_PX / SCALE), 
+                                      static_cast<unsigned int> (Y_WIDTH_PX / SCALE)));
+      }
+
       // Handle slider events
-      if (time_slider.handleEvent (event, window))
-        time = time_slider.getValue();
+      if (time_slider.handle_event (event, window))
+        time = time_slider.get_value();
+      else {
+        handle_add_point (event, window, bezier.get_control_points ());
+        handle_remove_point (event, window, bezier.get_control_points ());
+      } 
     }
 
     // Clear window, redraw background
     window.clear(); 
+    background.clear (sf::Color::White);
+    draw_grid (background, bezier.get_control_points()); 
+    background.display();
+    sf::Sprite bgSprite (background.getTexture());
     window.draw (bgSprite);
 
     // Draw curve control lines
     foreground.clear (sf::Color::Transparent);
-    int color_step = 256 / bezier.getControlPoints().size();
+    int color_step = 256 / bezier.get_control_points().size();
     draw_control_lines (foreground, bezier, 0, color_step);
 
     // Draw points
     for (float t = 0; t <= time; t += STEP)
-      draw_point (foreground, VEC_TO_CANVAS (bezier.getPointAtT (t)), R_PX);
-    draw_point (foreground, VEC_TO_CANVAS (bezier.getPointAtT (time)), R_PX * 2);
+      draw_point (foreground, VEC_TO_CANVAS (bezier.get_point_at_T (t)), R_PX, sf::Color::Red);
+    draw_point (foreground, VEC_TO_CANVAS (bezier.get_point_at_T (time)), R_PX * 2, sf::Color::Red);
 
     // Draw foreground texture
     foreground.display();

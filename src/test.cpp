@@ -20,7 +20,7 @@ void test2 ()
   vec.push_back (Vec2D (0, 0));
   vec.push_back (Vec2D (0, 1));
   Bezier line (vec, 0.5);
-  cout << line.getPointAtT (0.5) << endl;
+  cout << line.get_point_at_T (0.5) << endl;
 }
 
 // D2 Bezier
@@ -39,7 +39,7 @@ void test3 ()
 
   Bezier right_triangle (vec, 0);
   for (float t = 0; t < 1.0; t += 0.1)
-    cout << right_triangle.getPointAtT (t) << endl;
+    cout << right_triangle.get_point_at_T (t) << endl;
 }
 
 // D3 Bezier
@@ -67,7 +67,7 @@ void test4 ()
   // not true steps, steps - 1
   for (int steps = 0; steps <= 10; steps++) {
     float t = steps / 10.0;
-    cout << /* "t = " << t << ": " << */ bolt.getPointAtT (t) << endl;
+    cout << /* "t = " << t << ": " << */ bolt.get_point_at_T (t) << endl;
   }
 }
 

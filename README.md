@@ -10,6 +10,11 @@ cmake ..
 make
 ./Beziers
 
+# Controls
+Left click to add a joint
+Right click near a joint to remove it
+Drag the slider to step through time
+
 # Other Commands
 make test, builds and runs test.cpp
 make run, builds and runs main.cpp
