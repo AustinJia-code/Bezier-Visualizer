@@ -1,22 +1,23 @@
 ## General
-Uses SFML and C++ to generate and display n-degree Bezier curves.
-Calculations are done with De Casteljau's algorithm, which although naive and
-expensive, allows for the classic Bezier visualization.
+Uses C++ to generate n-degree Bezier curves with SFML visualization.\
+Calculations are done with De Casteljau's algorithm, which although naive and expensive, allows for the classic Bezier visualization.
 
 ## Controls
-Left click to add a joint
-Right click near a joint to remove it
-Drag the slider to step through time
+- Left click to add a joint
+- Right click near a joint to remove it
+- Drag the slider to step through time
 
 ## Build and Run
-```mkdir build```
-```cd build```
-```cmake ..```
-```make```
-```./Beziers```
+```
+mkdir build
+cd build
+cmake ..
+make
+./Beziers
+```
 
 ## Other Commands
-```make test``` - builds and runs test.cpp
+```make test``` - builds and runs test.cpp\
 ```make run``` - builds and runs main.cpp
 
 ## Dependencies
