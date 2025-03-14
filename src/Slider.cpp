@@ -35,16 +35,15 @@ bool Slider::handle_event (const sf::Event& event, const sf::RenderWindow& windo
   }
   
   // Check for mouse release
-  if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+  if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
     is_dragging = false;
-  }
   
   // Handle dragging
   if (is_dragging && event.type == sf::Event::MouseMoved) {
     // Calculate new handle position, keeping it within the track bounds
-    float x = std::max(track.getPosition().x, 
-              std::min(mousePos.x, track.getPosition().x + track.getSize().x));
-    handle.setPosition(x, handle.getPosition().y);
+    float x = std::max (track.getPosition().x, 
+              std::min (mousePos.x, track.getPosition().x + track.getSize().x));
+    handle.setPosition (x, handle.getPosition().y);
     
     // Update the current value based on handle position
     float ratio = (x - track.getPosition().x) / track.getSize().x;
@@ -62,6 +61,6 @@ float Slider::get_value() const
 
 void Slider::draw (sf::RenderTarget& target) const
 {
-  target.draw(track);
-  target.draw(handle);
+  target.draw (track);
+  target.draw (handle);
 }
