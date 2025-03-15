@@ -25,5 +25,7 @@ make
 - SFML 2.5
 
 ## Future Plans
+- Expand to splines with cubic Beziers
+- C1 continuity
 - Expand to 3D
 - Make points draggable
