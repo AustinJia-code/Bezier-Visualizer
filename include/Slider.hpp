@@ -2,12 +2,12 @@
 
 class Slider {
   private:
-    sf::RectangleShape track;                   // Background track
-    sf::CircleShape handle;                     // Draggable circle
-    float min;                                  // Value at full left
-    float max;                                  // Value at full right
-    float val;                                  // Current value
-    bool is_dragging;                           // Is dragging
+    sf::RectangleShape  _track;                   // Background track
+    sf::CircleShape     _handle;                  // Draggable circle
+    float               _min;                     // Value at full left
+    float               _max;                     // Value at full right
+    float               _val;                     // Current value
+    bool                _is_dragging;             // Is dragging
       
   public:
     /**
@@ -20,7 +20,8 @@ class Slider {
      * @param initial default position
      * @param scale display scale
      */
-    Slider (float x, float y, float width, float height, float min, float max, float initial, float scale);
+    Slider (float x, float y, float width, float height, float min, float max, 
+            float initial, float scale);
 
     /**
      * Called when an event is triggered on the slider

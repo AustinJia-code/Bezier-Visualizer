@@ -17,6 +17,7 @@ make
 ```
 
 ## Other Commands
+In build:
 ```make test``` - builds and runs test.cpp\
 ```make run``` - builds and runs main.cpp
 

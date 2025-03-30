@@ -61,7 +61,7 @@ void test4 ()
   vec.push_back (Vec2D (1, 1));
 
   std::cout << std::fixed;
-  std::cout << std::setprecision(2);
+  std::cout << std::setprecision (2);
   Bezier bolt (vec, 0);
 
   // not true steps, steps - 1

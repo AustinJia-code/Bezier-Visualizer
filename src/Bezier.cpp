@@ -1,9 +1,7 @@
 #include "Bezier.hpp"
 #include <assert.h>
 
-Bezier::~Bezier() {
-  delete child;
-}
+Bezier::~Bezier() { delete child; }
 
 Bezier::Bezier (const std::vector<Vec2D>& vec, float t) : t (t)
 {
@@ -12,14 +10,16 @@ Bezier::Bezier (const std::vector<Vec2D>& vec, float t) : t (t)
 
   control_points = vec;
   // if this is a final interpolation, calculate point
-  if (vec.size () == 2) {
-    child = nullptr;
-    point = Vec2D::lerp (vec.at (0), vec.at (1), t);
-  } 
+  if (vec.size () == 2) 
+    {
+      child = nullptr;
+      point = Vec2D::lerp (vec.at (0), vec.at (1), t);
+    } 
   // Get point, force calculation
-  else {
-    get_point_at_T (t, true);
-  }
+  else
+    {
+      get_point_at_T (t, true);
+    }
 }
 
 void Bezier::set_control_points (const std::vector<Vec2D>& vec)
@@ -36,11 +36,12 @@ Vec2D Bezier::get_point_at_T (float t, bool override)
   
   this->t = t;
   // If final interpolation, calculate point
-  if (control_points.size() == 2) {
-    this->t = t;
-    point = Vec2D::lerp (control_points.at (0), control_points.at (1), t);
-    return point;
-  }
+  if (control_points.size() == 2) 
+    {
+      this->t = t;
+      point = Vec2D::lerp (control_points.at (0), control_points.at (1), t);
+      return point;
+    }
 
   std::vector<Vec2D> child_vec;
 
@@ -67,12 +68,6 @@ const std::vector<Vec2D>& Bezier::get_control_points() const
   return control_points;
 }
 
-std::vector<Vec2D>& Bezier::get_control_points()
-{
-  return control_points;
-}
+std::vector<Vec2D>& Bezier::get_control_points() { return control_points; }
 
-const Bezier* Bezier::getChild() const
-{
-  return child;
-}
+const Bezier* Bezier::getChild() const { return child; }
