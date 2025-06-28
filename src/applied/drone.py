@@ -92,11 +92,9 @@ class Drone (Locatable):
     def set_path (self, bezier_spline, pos_gains = (2, 0, 0.5), vel_gains = (4, 0, 0.2),
                   pos_limits = (-3, 3), vel_limits = (-10, 10)):
         waypoints = bezier_spline.points
-        w_count = len (waypoints)
 
         # Build KDTree
         self.waypoint_tree = KDTree (waypoints)
-        self.waypoint_tree.print_tree ()
 
         self.pid_3d = ChainedPID3D (
             pos_gains = pos_gains,
@@ -116,8 +114,6 @@ class Drone (Locatable):
         targets = self.waypoint_tree.search_radius (self.pos, self.look_r)
         targets.sort (reverse = True)
         target = targets[0]
-        for t in targets:
-            print (t.index)
 
         current_time = time.time ()
         accel_cmd = self.pid_3d.update (self.pos.to_tuple (), self.vel.to_tuple (),

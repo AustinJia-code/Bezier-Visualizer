@@ -14,12 +14,10 @@ points.append (Vec3D (5, 5, 5))
 points.append (Vec3D (10, 5, 5))
 points.append (Vec3D (12, 7, 7))
 
-path = BezierSpline (points, 20)
-for point in path.points:
-    print (point.index)
+path = BezierSpline (points, max_step = 2)
 
 # Init drone
-drone = Drone (pos = Vec3D (-5, -5, -5))
+drone = Drone (pos = Vec3D (-5, -5, -5), look_r = path.max_step * 1.5)
 drone.set_path (path)
 
 # Draw

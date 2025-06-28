@@ -1,6 +1,8 @@
 #include "SFMLUtil.hpp"
 #include "Slider.hpp"
 #include <vector>
+#include <emscripten.h>
+#include <emscripten/html5.h>
 
 /**
  * Initialize control points for the Bezier curve
@@ -75,8 +77,7 @@ void handle_remove_point (const sf::Event& event, sf::RenderWindow& window,
     control_points.erase (control_points.begin () + min_index);
 }
 
-int main ()
-{
+void main_loop () {
   // Slider from t = 0 to t = 1.0, step of 0.1
   float time = 0.5;
   Slider time_slider (50, Y_PX - 50 * SCALE, 300, 20, 0.0, 1.0, time, SCALE);
@@ -102,6 +103,7 @@ int main ()
   sf::RenderTexture foreground;
   foreground.create (X_PX, Y_PX);
 
+<<<<<<< Updated upstream
   while (window.isOpen ()) 
     {
       sf::Event event;
@@ -110,6 +112,13 @@ int main ()
           // Check for x-out
           if (event.type == sf::Event::Closed)
             window.close ();
+=======
+  sf::Event event;
+    while (window.pollEvent (event)) {
+      // Check for x-out
+      if (event.type == sf::Event::Closed)
+        window.close();
+>>>>>>> Stashed changes
 
           // Lock the window size
           if (event.type == sf::Event::Resized)
@@ -161,6 +170,15 @@ int main ()
     time_slider.draw (window);
 
     // Update window
+<<<<<<< Updated upstream
     window.display ();
   }
+=======
+    window.display();
+}
+
+int main ()
+{    // Start the Ems
+    emscripten_set_main_loop (main_loop, 0, true);
+>>>>>>> Stashed changes
 }
