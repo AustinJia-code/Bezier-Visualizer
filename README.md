@@ -2,6 +2,8 @@
 Uses C++ to generate n-degree Bezier curves with SFML visualization.\
 Calculations are done with De Casteljau's algorithm, which although naive and expensive, allows for the classic Bezier visualization.
 
+./applied contains code for a 3D Python bezier path-following program.
+
 ## Controls
 - Left click to add a joint
 - Right click near a joint to remove it
