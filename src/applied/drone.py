@@ -92,9 +92,11 @@ class Drone (Locatable):
     def set_path (self, bezier_spline, pos_gains = (2, 0, 0.5), vel_gains = (4, 0, 0.2),
                   pos_limits = (-3, 3), vel_limits = (-10, 10)):
         waypoints = bezier_spline.points
+        assert self.look_r >= bezier_spline.max_step, "Lookahead radius must be greater than path max step"
 
         # Build KDTree
         self.waypoint_tree = KDTree (waypoints)
+        self.prev_waypoint = waypoints [0]
 
         self.pid_3d = ChainedPID3D (
             pos_gains = pos_gains,
@@ -110,16 +112,22 @@ class Drone (Locatable):
       
         # Search waypoint_tree for largest intersected waypoint index
         # PID to that
-        # TODO: Implement expanding radius if no targets found
+        # If no target found, go to prev known waypoint (defaults to cp0)
         targets = self.waypoint_tree.search_radius (self.pos, self.look_r)
         targets.sort (reverse = True)
-        target = targets[0]
+        if (len (targets) > 0):
+            target = targets[0]
+            self.prev_waypoint = target
+        else:
+            target = self.prev_waypoint
 
         current_time = time.time ()
         accel_cmd = self.pid_3d.update (self.pos.to_tuple (), self.vel.to_tuple (),
                                         target.pos.to_tuple(), current_time)
 
         self.kinematics (Vec3D (*accel_cmd), current_time)
+
+        return target
 
     def kinematics (self, accel, current_time):
         if (self.prev_time is None):
