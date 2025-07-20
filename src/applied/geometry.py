@@ -7,7 +7,6 @@ class Locatable (ABC):
     def get_pos (self) -> 'Vec3D':
       pass
 
-
 class Vec3D (Locatable):
     def __init__ (self, x, y, z):
         self.x = x
@@ -43,6 +42,17 @@ class Vec3D (Locatable):
 
     def get_pos (self) -> 'Vec3D':
         return self
+    
+    def normalize (self) -> 'Vec3D':
+        scalar = (self.x **2 + self.y **2 + self.z ** 2) ** 0.5
+        self.x /= scalar
+        self.y /= scalar
+        self.z /= scalar
+
+        return self
+    
+    def get_copy (self) -> 'Vec3D':
+        return Vec3D (self.x, self.y, self.z)
 
     def to_tuple(self):
         return (self.x, self.y, self.z)

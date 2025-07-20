@@ -1,5 +1,6 @@
 from geometry import Vec3D, KDTree, Locatable
 from bezier import BezierSpline
+from waypoint import *
 import time
 
 class PID:
@@ -89,10 +90,13 @@ class Drone (Locatable):
     def get_pos (self) -> Vec3D:
         return self.pos
 
-    def set_path (self, bezier_spline, pos_gains = (2, 0, 0.5), vel_gains = (4, 0, 0.2),
-                  pos_limits = (-3, 3), vel_limits = (-10, 10)):
-        waypoints = bezier_spline.points
-        assert self.look_r >= bezier_spline.max_step, "Lookahead radius must be greater than path max step"
+    def set_path (self, waypoint_path, pos_gains = (2, 0, 0.5), vel_gains = (4, 0, 0.2),
+                  pos_limits = None, vel_limits = (-10, 10)):
+        waypoints = waypoint_path.points
+        assert self.look_r >= waypoint_path.max_step, "Lookahead radius must be greater than path max step"
+
+        if pos_limits is None:
+            pos_limits = (-self.look_r, self.look_r)
 
         # Build KDTree
         self.waypoint_tree = KDTree (waypoints)
@@ -105,8 +109,8 @@ class Drone (Locatable):
             vel_limits = vel_limits,
         )
 
-    # Must call set_path beforehand
-    def follow_path (self):
+    # Must call set_path beforehand, returns the target point
+    def follow_path (self) -> Vec3D:
         if (self.pid_3d is None):
             raise ValueError ("Path not set")
       

@@ -1,17 +1,5 @@
 from geometry import Vec3D, Locatable
-
-# Waypoint
-class Waypoint (Locatable):
-    def __init__ (self, pos, index):
-        self.pos = pos                                      # type Vec3D
-        self.index = index                                  # type num
-
-    def __lt__(self, other):
-        return self.index < other.index
-
-    def get_pos (self) -> Vec3D:
-        return self.pos
-
+from waypoint import *
 
 # Cubic Bezier curve
 class BezierCurve:
@@ -70,9 +58,10 @@ class BezierSpline:
     def __init__ (self, control_points, max_step = 2):
         # Format: [p0, c1, c2, p1, c2, p2, c2, p3...]
         # p will be intersected, c2 will always be mirrored over pNext as c1Next
-        self.control_points = control_points                # type: Vec3D[]
+        self.control_points = control_points                # type: list[Vec3D]
         self.max_step = max_step                            # type: num
-        self.points = self.build_spline ()                  # type: Waypoint[]
+        self.points = self.build_spline ()                  # type: list[Waypoint]
+        self.waypoint_path = None                           # type: WaypointPath
 
     def build_spline (self) -> list[Waypoint]:
         cps = self.control_points
@@ -105,3 +94,9 @@ class BezierSpline:
                 points.extend (curve.points)
 
         return points
+    
+    def get_waypoint_path (self) -> WaypointPath:
+        if self.waypoint_path is None:
+            self.waypoint_path = WaypointPath (self.max_step, self.points)
+            
+        return self.waypoint_path

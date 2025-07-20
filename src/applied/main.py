@@ -3,6 +3,7 @@ from geometry import Vec3D
 from drone import Drone
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from waypoint import *
 import time
 
 # Build path
@@ -14,7 +15,7 @@ points.append (Vec3D (5, 5, 5))
 points.append (Vec3D (10, 5, 5))
 points.append (Vec3D (12, 7, 7))
 
-path = BezierSpline (points, max_step = 2)
+path = BezierSpline (points, max_step = 2).get_waypoint_path ()
 
 # Init drone
 drone = Drone (pos = Vec3D (-5, -5, -5), look_r = path.max_step * 1.5)
