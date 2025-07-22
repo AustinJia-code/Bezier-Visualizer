@@ -1,5 +1,6 @@
 from geometry import Vec3D, Locatable
 from waypoint import *
+from obstacle import *
 
 # Cubic Bezier curve
 class BezierCurve:
@@ -95,6 +96,30 @@ class BezierSpline:
 
         return points
     
+    def split_by_obstacles (self, obstacles: list[Obstacle]) -> list[WaypointPath]:
+        if self.waypoint_path is None:
+            self.get_waypoint_path ()
+        
+        paths = []
+        cur_path = WaypointPath (self.max_step, [])
+        for waypoint in self.waypoint_path.points:
+            obstructed = False
+            for obstacle in obstacles:
+                # if obstacle intersects and cur path isn't empty, add it to list
+                if (obstacle.intersects_point (waypoint.pos)):
+                    if (len (cur_path.points) > 0):
+                      paths.append (cur_path)
+                      cur_path = WaypointPath (self.max_step, [])
+                    obstructed = True
+                    break
+            if not obstructed:
+              cur_path.points.append (waypoint)
+
+        if len (cur_path.points) > 0:
+            paths.append (cur_path)
+
+        return paths
+
     def get_waypoint_path (self) -> WaypointPath:
         if self.waypoint_path is None:
             self.waypoint_path = WaypointPath (self.max_step, self.points)

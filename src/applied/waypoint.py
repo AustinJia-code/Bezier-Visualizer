@@ -2,20 +2,20 @@ from geometry import *
 
 # Waypoint
 class Waypoint (Locatable):
-    def __init__ (self, pos, index):
-        self.pos = pos                                      # type: Vec3D
-        self.index = index                                  # type: num
+    def __init__ (self, pos: Vec3D, index: int):
+        self.pos: Vec3D = pos
+        self.index: int = index
 
-    def __lt__(self, other):
+    def __lt__(self, other: Vec3D):
         return self.index < other.index
 
     def get_pos (self) -> Vec3D:
         return self.pos
 
 class WaypointPath:
-    def __init__ (self, max_step, points):
-        self.max_step = max_step                            # type: num
-        self.points = points                                # type: list[Waypoint]
+    def __init__ (self, max_step: float, points: list[Waypoint]):
+        self.max_step: float = max_step
+        self.points: list[Waypoint] = points
 
     def deep_copy (self):
         copied_points = [Waypoint (wp.get_pos ().get_copy (), wp.index)

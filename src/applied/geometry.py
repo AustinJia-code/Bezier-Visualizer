@@ -39,6 +39,9 @@ class Vec3D (Locatable):
 
     def dist (self, other):
         return self.dist_sq (other) ** 0.5
+    
+    def length (self):
+        return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** 0.5
 
     def get_pos (self) -> 'Vec3D':
         return self
@@ -56,6 +59,9 @@ class Vec3D (Locatable):
 
     def to_tuple(self):
         return (self.x, self.y, self.z)
+    
+    def __str__(self):
+        return f"({self.x}, {self.y}, {self.z})"
 
     @classmethod
     def from_tuple (cls, t):
