@@ -60,8 +60,8 @@ for i in range (len (paths) - 1):
     start = paths[i].points[-1].pos
     goal = paths[i + 1].points[0].pos
     print (str (start))
-    rrt = RRT (start = start, goal = goal, step_size = 0.5, 
-                  radius = 2, bl_bound = Vec3D (-5, -5, -5), tr_bound =  Vec3D (12, 7, 7), 
+    rrt = RRT (start = start, goal = goal, step_size = 1, 
+                  radius = 2, bl_bound = Vec3D (-5, -5, -5), tr_bound = Vec3D (12, 7, 7), 
                   obstacles = obstacles)
     patches.append (rrt.get_waypoint_path (max_step = 2))
 

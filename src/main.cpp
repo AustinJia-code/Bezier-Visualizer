@@ -1,9 +1,6 @@
 #include "SFMLUtil.hpp"
 #include "Slider.hpp"
 #include <vector>
-#include <emscripten.h>
-#include <emscripten/html5.h>
-
 /**
  * Initialize control points for the Bezier curve
  * @return vector generated, with control points in order
@@ -103,7 +100,6 @@ void main_loop () {
   sf::RenderTexture foreground;
   foreground.create (X_PX, Y_PX);
 
-<<<<<<< Updated upstream
   while (window.isOpen ()) 
     {
       sf::Event event;
@@ -112,13 +108,6 @@ void main_loop () {
           // Check for x-out
           if (event.type == sf::Event::Closed)
             window.close ();
-=======
-  sf::Event event;
-    while (window.pollEvent (event)) {
-      // Check for x-out
-      if (event.type == sf::Event::Closed)
-        window.close();
->>>>>>> Stashed changes
 
           // Lock the window size
           if (event.type == sf::Event::Resized)
@@ -139,46 +128,43 @@ void main_loop () {
             } 
         }
 
-    // Clear window, redraw background
-    window.clear (); 
-    background.clear (sf::Color::White);
-    draw_grid (background, bezier.get_control_points ()); 
-    background.display ();
-    sf::Sprite bgSprite (background.getTexture ());
-    window.draw (bgSprite);
+      // Clear window, redraw background
+      window.clear (); 
+      background.clear (sf::Color::White);
+      draw_grid (background, bezier.get_control_points ()); 
+      background.display ();
+      sf::Sprite bgSprite (background.getTexture ());
+      window.draw (bgSprite);
 
-    // Draw curve control lines
-    foreground.clear (sf::Color::Transparent);
-    int num_beziers = bezier.get_control_points ()
-                            .size ();
-    float t_step = 1.0 / (num_beziers - 1);
-    draw_control_lines (foreground, bezier, 0, t_step);
+      // Draw curve control lines
+      foreground.clear (sf::Color::Transparent);
+      int num_beziers = bezier.get_control_points ()
+                              .size ();
+      float t_step = 1.0 / (num_beziers - 1);
+      draw_control_lines (foreground, bezier, 0, t_step);
 
-    // Draw points
-    for (float t = 0; t <= time; t += STEP)
-      draw_point (foreground, VEC_TO_CANVAS (bezier.get_point_at_T (t)), 
-                                             R_PX, C2);
-    draw_point (foreground, VEC_TO_CANVAS (bezier.get_point_at_T (time)), 
-                                           R_PX * 2, C2);
+      // Draw points
+      for (float t = 0; t <= time; t += STEP)
+        draw_point (foreground, VEC_TO_CANVAS (bezier.get_point_at_T (t)), 
+                                              R_PX, C2);
+      draw_point (foreground, VEC_TO_CANVAS (bezier.get_point_at_T (time)), 
+                                            R_PX * 2, C2);
 
-    // Draw foreground texture
-    foreground.display ();
-    sf::Sprite fgSprite (foreground.getTexture ());
-    window.draw (fgSprite);
+      // Draw foreground texture
+      foreground.display ();
+      sf::Sprite fgSprite (foreground.getTexture ());
+      window.draw (fgSprite);
 
-    // Draw slider
-    time_slider.draw (window);
+      // Draw slider
+      time_slider.draw (window);
 
-    // Update window
-<<<<<<< Updated upstream
-    window.display ();
-  }
-=======
-    window.display();
+      // Update window
+      window.display ();
+    }
 }
 
-int main ()
-{    // Start the Ems
-    emscripten_set_main_loop (main_loop, 0, true);
->>>>>>> Stashed changes
+int main () 
+{
+  while (true)
+    main_loop ();
 }

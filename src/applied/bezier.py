@@ -4,20 +4,20 @@ from obstacle import *
 
 # Cubic Bezier curve
 class BezierCurve:
-    def __init__ (self, control_points, max_step = 2, index_offset = 0):
-        self.control_points = control_points                # type: Vec3D[]
-        self.max_step = max_step                            # type: num
-        self.points = self.build_points (index_offset)      # type: Waypoint[]
+    def __init__ (self, control_points: list[Vec3D], max_step: float, index_offset: int = 0):
+        self.control_points = control_points
+        self.max_step = max_step
+        self.points = self.build_points (index_offset)
 
     # t in [0, 1]
-    def vec_at_t (self, t) -> Vec3D:
+    def vec_at_t (self, t: float) -> Vec3D:
         cps = self.control_points
         return (cps[0] * (1 - t)**3 +
                 cps[1] * 3 * (1 - t)**2 * t +
                 cps[2] * 3 * (1 - t) * t**2 +
                 cps[3] * t**3)
 
-    def build_points (self, index_offset) -> list[Waypoint]:
+    def build_points (self, index_offset: int) -> list[Waypoint]:
         # Recursively subsamples between two ts
         def subsample (t0, t1, v0 = None, v1 = None):
             subsamples = {}
@@ -53,23 +53,22 @@ class BezierCurve:
 
         return points
 
-
 # C1 continuous Bezier spline
 class BezierSpline:
-    def __init__ (self, control_points, max_step = 2):
+    def __init__ (self, control_points: list[Vec3D], max_step: float):
         # Format: [p0, c1, c2, p1, c2, p2, c2, p3...]
         # p will be intersected, c2 will always be mirrored over pNext as c1Next
-        self.control_points = control_points                # type: list[Vec3D]
-        self.max_step = max_step                            # type: num
-        self.points = self.build_spline ()                  # type: list[Waypoint]
-        self.waypoint_path = None                           # type: WaypointPath
+        self.control_points: list[Vec3D] = control_points 
+        self.max_step: float = max_step
+        self.points: list[Waypoint] = self.build_spline ()
+        self.waypoint_path: WaypointPath = None
 
     def build_spline (self) -> list[Waypoint]:
         cps = self.control_points
         assert len (cps) > 4 and (len (cps) % 2 == 0), "CP count must be 2n and > 4"
 
-        points = []
-        segment_count = len (cps) // 3
+        points: list[Vec3D] = []
+        segment_count: int = len (cps) // 3
 
         for i in range (segment_count):
             # C1 Mirroring
@@ -96,12 +95,16 @@ class BezierSpline:
 
         return points
     
+    # Split list by obstacles
+    # Disjoint path is separated into list of lists regardless of distance between
+    # distances between end and start of lists (may be < self.max_step)
     def split_by_obstacles (self, obstacles: list[Obstacle]) -> list[WaypointPath]:
         if self.waypoint_path is None:
             self.get_waypoint_path ()
         
-        paths = []
+        paths: list[WaypointPath] = []
         cur_path = WaypointPath (self.max_step, [])
+        
         for waypoint in self.waypoint_path.points:
             obstructed = False
             for obstacle in obstacles:

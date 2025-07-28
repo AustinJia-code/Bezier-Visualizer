@@ -37,7 +37,7 @@ class Vec3D (Locatable):
     def dist_sq (self, other):
          return (self.x - other.x) ** 2 + (self.y - other.y) ** 2 + (self.z - other.z) ** 2
 
-    def dist (self, other):
+    def dist (self, other: 'Vec3D'):
         return self.dist_sq (other) ** 0.5
     
     def length (self):

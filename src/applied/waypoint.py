@@ -34,4 +34,4 @@ def merge_waypoint_paths (paths: list[WaypointPath]) -> WaypointPath:
         waypoint.index = i
 
     # Use the largest max step
-    return WaypointPath (min (path.max_step for path in paths), all_points)
+    return WaypointPath (max (path.max_step for path in paths), all_points)
