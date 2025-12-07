@@ -2,7 +2,7 @@
 Uses C++ to generate n-degree Bezier curves with SFML visualization.\
 Calculations are done with De Casteljau's algorithm, which although naive and expensive, allows for the classic Bezier visualization.
 
-./applied contains code for a 3D Python bezier path-following program.
+./applied contains code for a 3D Python bezier generating/following program, with additional obstacle avoidance functionality.
 No requirements.
 
 ## Controls
@@ -31,5 +31,4 @@ In build:
 ## Future Plans
 - Expand to splines with cubic Beziers
 - C1 continuity
-- Expand to 3D
 - Make points draggable
