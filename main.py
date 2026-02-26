@@ -3,6 +3,7 @@ from src.drone import Drone
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
+import time
 import sys
 
 # Scene
@@ -10,8 +11,8 @@ scene_file = 'scenes/' + (sys.argv[1] if len (sys.argv) > 1 else 'default.json')
 scene = Scene.from_file (scene_file)
 
 # Path and Drone
-path  = scene.build_path ()
-drone = Drone (pos = scene.start, look_r = scene.bezier_max_step * 1.5)
+path     = scene.build_path ()
+drone    = Drone (pos = scene.start, look_r = scene.bezier_max_step * 1.5)
 drone.set_path (path)
 waypoint = drone.prev_waypoint
 
@@ -44,24 +45,37 @@ ys = [p.pos.y for p in path.points]
 zs = [p.pos.z for p in path.points]
 ax.scatter (xs, ys, zs, label = 'Path')
 
+# Initial obstacle surfaces (will be replaced each frame for moving obstacles)
+obs_surfaces = []
 for obs in scene.obstacles:
     sx, sy, sz = create_sphere (obs.center, obs.radius)
-    ax.plot_surface (sx, sy, sz, alpha = 0.6, color = 'red')
+    obs_surfaces.append (ax.plot_surface (sx, sy, sz, alpha = 0.6, color = 'red'))
 ax.scatter ([], [], [], color = 'red', s = 100, label = 'Obstacle')
 
 drone_point,  = ax.plot ([drone.pos.x], [drone.pos.y], [drone.pos.z], 'bo', label = 'Drone')
 target_point, = ax.plot ([waypoint.pos.x], [waypoint.pos.y], [waypoint.pos.z], 'go', label = 'Waypoint')
 ax.legend ()
 
+t0 = time.time ()
+
 def update (_):
+    t = time.time () - t0
+
+    # Update moving obstacles
+    for i, obs in enumerate (scene.obstacles):
+        if obs.motion is not None:
+            obs.update (t)
+            obs_surfaces[i].remove ()
+            sx, sy, sz = create_sphere (obs.center, obs.radius)
+            obs_surfaces[i] = ax.plot_surface (sx, sy, sz, alpha = 0.6, color = 'red')
+
     target = drone.follow_path ()
     drone_point.set_data ([drone.pos.x], [drone.pos.y])
     drone_point.set_3d_properties ([drone.pos.z])
     target_point.set_data ([target.pos.x], [target.pos.y])
     target_point.set_3d_properties ([target.pos.z])
-    return drone_point, target_point
 
-ani = FuncAnimation (fig, update, interval = 10, blit = True)
+ani = FuncAnimation (fig, update, interval = 10)
 ax.set_box_aspect ([1, 1, 1])
 set_axes_equal (ax)
 plt.show ()

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import json
 from .geometry import Vec3D
-from .obstacle import Obstacle
+from .obstacle import Obstacle, LinearMotion, CircularMotion
 from .bezier import BezierSpline
 from .waypoint import WaypointPath, merge_waypoint_paths
 from .RRT import RRT
@@ -24,9 +24,31 @@ class Scene:
 
         def vec (v): return Vec3D (*v)
 
+        def parse_motion (o):
+            m = o.get ('motion')
+            if m is None:
+                return None
+            t = m['type']
+            if t == 'linear':
+                return LinearMotion (
+                    points = [vec (p) for p in m['points']],
+                    speed  = m.get ('speed', 1.0),
+                    loop   = m.get ('loop',  'bounce'),
+                )
+            if t == 'circular':
+                return CircularMotion (
+                    orbit_center  = vec (m['orbit_center']),
+                    orbit_radius  = m['orbit_radius'],
+                    axis          = m['axis'],
+                    speed         = m.get ('speed', 1.0),
+                    phase         = m.get ('phase', 0.0),
+                )
+            raise ValueError (f"Unknown motion type: {t!r}")
+
         return cls (
             control_points  = [vec (p) for p in d['control_points']],
-            obstacles       = [Obstacle (center = vec (o['center']), radius = o['radius'])
+            obstacles       = [Obstacle (center = vec (o['center']), radius = o['radius'],
+                                         motion = parse_motion (o))
                                for o in d['obstacles']],
             bounds          = (vec (d['bounds']['min']), vec (d['bounds']['max'])),
             bezier_max_step = d.get ('bezier_max_step', 2.0),

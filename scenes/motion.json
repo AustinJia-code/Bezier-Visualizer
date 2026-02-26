@@ -1,0 +1,42 @@
+{
+    "control_points": [
+        [-5, -5, -5],
+        [-3,  0,  0],
+        [ 3,  0,  0],
+        [ 5,  5,  5],
+        [10,  5,  5],
+        [12,  7,  7]
+    ],
+    "obstacles": [
+        {
+            "center": [4, 2, 4],
+            "radius": 1.5,
+            "motion": {
+                "type":   "linear",
+                "points": [[4, -2, 4], [4, 8, 4]],
+                "speed":  3.0,
+                "loop":   "bounce"
+            }
+        },
+        {
+            "center": [7, 4, 4],
+            "radius": 1.0,
+            "motion": {
+                "type":         "circular",
+                "orbit_center": [4, 4, 4],
+                "orbit_radius": 4,
+                "axis":         [0, 0, 1],
+                "speed":        1.2,
+                "phase":        0.0
+            }
+        }
+    ],
+    "bounds": {
+        "min": [-5, -5, -5],
+        "max": [12,  7,  7]
+    },
+    "bezier_max_step": 2.0,
+    "rrt_step_size":   1.0,
+    "rrt_radius":      2.0,
+    "rrt_seed":        0
+}

@@ -15,7 +15,7 @@ src/
 
 ### Run
 ```
-python main.py
+python main.py [scene]
 ```
 
 ### Dependencies
