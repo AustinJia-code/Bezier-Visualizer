@@ -35,8 +35,9 @@
         "min": [-5, -5, -5],
         "max": [12,  7,  7]
     },
-    "bezier_max_step": 2.0,
-    "rrt_step_size":   1.0,
-    "rrt_radius":      2.0,
-    "rrt_seed":        0
+    "bezier_max_step":   2.0,
+    "rrt_step_size":     1.0,
+    "rrt_radius":        2.0,
+    "rrt_seed":          0,
+    "replan_interval":   2.0
 }

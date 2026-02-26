@@ -109,6 +109,12 @@ class Drone (Locatable):
             vel_limits = vel_limits,
         )
 
+    # Swap waypoint tree without resetting PID (safe to call mid-flight)
+    def update_path (self, waypoint_path: WaypointPath) -> None:
+        assert self.look_r >= waypoint_path.max_step
+        self.waypoint_tree = KDTree (waypoint_path.points)
+        self.prev_waypoint = waypoint_path.points[0]
+
     # Must call set_path beforehand, returns the target point
     def follow_path (self) -> Vec3D:
         if (self.pid_3d is None):

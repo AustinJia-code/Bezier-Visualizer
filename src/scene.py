@@ -16,6 +16,7 @@ class Scene:
     rrt_step_size: float = 1.0
     rrt_radius: float = 2.0
     rrt_seed: int | None = None
+    replan_interval: float = 0.0    # seconds between replans; 0 = disabled
 
     @classmethod
     def from_file (cls, path: str) -> 'Scene':
@@ -55,6 +56,7 @@ class Scene:
             rrt_step_size   = d.get ('rrt_step_size',   1.0),
             rrt_radius      = d.get ('rrt_radius',      2.0),
             rrt_seed        = d.get ('rrt_seed',        None),
+            replan_interval = d.get ('replan_interval', 0.0),
         )
 
     @property

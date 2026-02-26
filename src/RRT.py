@@ -142,54 +142,19 @@ class RRT ():
         return self.get_path (closest)
         
     # Convert RRT path to waypoints
-    def get_waypoint_path (self, max_step: float) -> WaypointPath:       
-        # build waypoint path
+    def get_waypoint_path (self, max_step: float) -> WaypointPath:
         vec_path = self.plan ()
         waypoints: list[Waypoint] = []
         index = 0
 
-        left = 0
-        right = 1
-        
-        # Add waypoints
-        while right < len (vec_path):
-            start = vec_path[left]
-            end = vec_path[right]
+        for i in range (len (vec_path) - 1):
+            a, b  = vec_path[i], vec_path[i + 1]
+            steps = max (1, math.ceil (a.dist (b) / max_step))
 
-            # If step too small, go to next
-            if (start.dist_sq (end) < max_step ** 2):
-                right += 1
-                continue
-            
-            if right != left + 1:
-                waypoints.append (Waypoint (start, index))
-                index += 1
-                left = right - 1
-
-            # Step too large, break it up and add waypoints
-            segment = end - start
-            length = segment.length ()
-            steps = math.ceil (length / max_step)
-            
             for j in range (steps):
                 t = j / steps
-                point = start + segment * t
-                waypoints.append (Waypoint (point, index))
+                waypoints.append (Waypoint (a + (b - a) * t, index))
                 index += 1
 
-            left = right
-            right += 1
-
-        # Ensure final point is included and interpolated
-        start = waypoints[-1].pos
-        end = vec_path[-1]
-        segment = end - start
-        length = segment.length ()
-        steps = math.ceil (length / max_step)
-        
-        for j in range (steps + 1):
-            t = j / steps
-            point = start + segment * t
-            waypoints.append (Waypoint (point, index))
-
+        waypoints.append (Waypoint (vec_path[-1], index))
         return WaypointPath (max_step, waypoints)
