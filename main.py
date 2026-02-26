@@ -1,10 +1,10 @@
-from bezier import BezierSpline
-from geometry import Vec3D
-from drone import Drone
+from src.bezier import BezierSpline
+from src.geometry import Vec3D
+from src.drone import Drone
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from waypoint import *
-from RRT import *
+from src.waypoint import *
+from src.RRT import *
 import time
 
 def create_sphere(center, radius, resolution = 20):

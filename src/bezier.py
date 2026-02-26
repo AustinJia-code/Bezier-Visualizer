@@ -1,6 +1,6 @@
-from geometry import Vec3D, Locatable
-from waypoint import *
-from obstacle import *
+from .geometry import Vec3D, Locatable
+from .waypoint import *
+from .obstacle import *
 
 # Cubic Bezier curve
 class BezierCurve:

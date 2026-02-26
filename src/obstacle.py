@@ -1,4 +1,4 @@
-from geometry import *
+from .geometry import *
 
 class Obstacle (Locatable):
     def __init__ (self, center: Vec3D, radius: float):

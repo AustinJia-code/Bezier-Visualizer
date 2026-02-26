@@ -1,6 +1,6 @@
-from geometry import *
-from waypoint import *
-from obstacle import *
+from .geometry import *
+from .waypoint import *
+from .obstacle import *
 import math
 import numpy as np
 import random

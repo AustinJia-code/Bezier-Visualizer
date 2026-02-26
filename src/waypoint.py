@@ -1,4 +1,4 @@
-from geometry import *
+from .geometry import *
 
 # Waypoint
 class Waypoint (Locatable):

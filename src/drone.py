@@ -1,6 +1,6 @@
-from geometry import Vec3D, KDTree, Locatable
-from bezier import BezierSpline
-from waypoint import *
+from .geometry import Vec3D, KDTree, Locatable
+from .bezier import BezierSpline
+from .waypoint import *
 import time
 
 class PID:

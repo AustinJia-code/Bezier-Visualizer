@@ -1,17 +1,41 @@
-## General
-Uses C++ to generate n-degree Bezier curves with SFML visualization.\
-Calculations are done with De Casteljau's algorithm, which although naive and expensive, allows for the classic Bezier visualization.
+## Python (main)
+3D drone path-following simulation using Bezier splines and RRT* planning.
 
-./applied contains code for a 3D Python bezier path-following program.
-No requirements.
+### Structure
+```
+main.py          # entry point
+src/
+  geometry.py    # Vec3D, KDTree, Locatable
+  waypoint.py    # Waypoint, WaypointPath
+  obstacle.py    # Obstacle (sphere)
+  bezier.py      # BezierCurve, BezierSpline
+  RRT.py         # RRT* path planner
+  drone.py       # Drone simulation, PID controller
+```
 
-## Controls
+### Run
+```
+python main.py
+```
+
+### Dependencies
+- matplotlib
+- numpy
+
+---
+
+## C++ Basic Beziers (`basic/`)
+Generates n-degree Bezier curves with SFML visualization.\
+Calculations use De Casteljau's algorithm with an interactive joint editor.
+
+### Controls
 - Left click to add a joint
 - Right click near a joint to remove it
 - Drag the slider to step through time
 
-## Build and Run
+### Build and Run
 ```
+cd basic
 mkdir build
 cd build
 cmake ..
@@ -19,17 +43,11 @@ make
 ./Beziers
 ```
 
-## Other Commands
-In build:
+### Other Commands
+In `basic/build`:
 ```make test``` - builds and runs test.cpp\
 ```make run``` - builds and runs main.cpp
 
-## Dependencies
+### Dependencies
 - CMake 3.10
 - SFML 2.5
-
-## Future Plans
-- Expand to splines with cubic Beziers
-- C1 continuity
-- Expand to 3D
-- Make points draggable
