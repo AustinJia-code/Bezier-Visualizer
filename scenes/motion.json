@@ -14,7 +14,7 @@
             "motion": {
                 "type":   "linear",
                 "points": [[4, -2, 4], [4, 8, 4]],
-                "speed":  3.0,
+                "speed":  3,
                 "loop":   "bounce"
             }
         },
@@ -26,7 +26,7 @@
                 "orbit_center": [4, 4, 4],
                 "orbit_radius": 4,
                 "axis":         [0, 0, 1],
-                "speed":        1.2,
+                "speed":        1.4,
                 "phase":        0.0
             }
         }

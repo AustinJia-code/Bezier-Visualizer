@@ -23,6 +23,18 @@ waypoint = drone.prev_waypoint
 # Replanner
 replan_queue: queue.Queue = queue.Queue (maxsize = 1)
 
+# Shared path reference for worker reads, main thread writes
+current_path = path
+
+def path_is_threatened (wp_path, from_index, obstacles):
+    """Return True if any waypoint at or after from_index intersects an obstacle."""
+    for wp in wp_path.points:
+        if wp.index >= from_index:
+            for obs in obstacles:
+                if obs.intersects_point (wp.pos):
+                    return True
+    return False
+
 def replan_worker ():
     goal = scene.control_points[-1]
     bl, tr = scene.bounds
@@ -34,6 +46,11 @@ def replan_worker ():
         start     = drone.pos.get_copy ()
         obs_snap  = [Obstacle (center = obs.center.get_copy (), radius = obs.radius)
                      for obs in scene.obstacles]
+
+        # Only replan if the remaining path is actually threatened
+        from_index = drone.prev_waypoint.index if drone.prev_waypoint is not None else 0
+        if not path_is_threatened (current_path, from_index, obs_snap):
+            continue
 
         rrt = RRT (start = start, goal = goal,
                    step_size  = scene.rrt_step_size,
@@ -112,6 +129,8 @@ def update (_):
     # Swap to freshly planned path when available
     try:
         new_path = replan_queue.get_nowait ()
+        global current_path
+        current_path = new_path
         drone.update_path (new_path)
         path_scatter[0].remove ()
         path_scatter[0] = make_path_scatter (new_path)
