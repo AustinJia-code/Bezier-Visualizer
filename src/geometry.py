@@ -25,7 +25,7 @@ class Vec3D (Locatable):
     def __sub__ (self, other):
         return Vec3D (self.x - other.x, self.y - other.y, self.z - other.z)
 
-    def __getitem__(self, index):
+    def __getitem__ (self, index):
         if not isinstance(index, int):
             raise TypeError(f"Index must be an integer, got {type(index)}")
 

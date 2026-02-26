@@ -12,9 +12,10 @@ class RRTNode ():
         self.cost: float = 0.0
 
 class RRT ():
-    def __init__ (self, start: Vec3D, goal: Vec3D, step_size: float, 
-                  radius: float, bl_bound: Vec3D, tr_bound: Vec3D, 
-                  obstacles: list[Obstacle], max_iter: int = 1000):
+    def __init__ (self, start: Vec3D, goal: Vec3D, step_size: float,
+                  radius: float, bl_bound: Vec3D, tr_bound: Vec3D,
+                  obstacles: list[Obstacle], max_iter: int = 1000,
+                  seed: int | None = None):
         self.start: RRTNode = RRTNode (start)
         self.goal: RRTNode = RRTNode (goal)
         self.step_size: float = step_size
@@ -24,12 +25,13 @@ class RRT ():
         self.obstacles: list[Obstacle] = obstacles
         self.nodes: list[RRTNode] = [self.start]
         self.max_iter: int = max_iter
+        self.rng: random.Random = random.Random (seed)
 
     # Get random point in world bounds
     def get_random_point (self) -> Vec3D:
-        return Vec3D (random.uniform (self.bl_bound[0], self.tr_bound[0]),
-                      random.uniform (self.bl_bound[1], self.tr_bound[1]),
-                      random.uniform (self.bl_bound[2], self.tr_bound[2]))
+        return Vec3D (self.rng.uniform (self.bl_bound[0], self.tr_bound[0]),
+                      self.rng.uniform (self.bl_bound[1], self.tr_bound[1]),
+                      self.rng.uniform (self.bl_bound[2], self.tr_bound[2]))
 
     # Get nearest node to point
     def get_nearest_node (self, point) -> RRTNode:

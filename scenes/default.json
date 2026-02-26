@@ -1,0 +1,21 @@
+{
+    "control_points": [
+        [-5, -5, -5],
+        [-3,  0,  0],
+        [ 3,  0,  0],
+        [ 5,  5,  5],
+        [10,  5,  5],
+        [12,  7,  7]
+    ],
+    "obstacles": [
+        { "center": [4, 4, 4], "radius": 2 }
+    ],
+    "bounds": {
+        "min": [-5, -5, -5],
+        "max": [12,  7,  7]
+    },
+    "bezier_max_step": 2.0,
+    "rrt_step_size":   1.0,
+    "rrt_radius":      2.0,
+    "rrt_seed":        0
+}
