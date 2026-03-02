@@ -2,6 +2,7 @@ from src.scene import Scene
 from src.drone import Drone
 from src.obstacle import Obstacle
 from src.RRT import RRT
+from src.geometry import Vec3D
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
@@ -113,8 +114,48 @@ ax.legend ()
 
 t0 = time.time ()
 
-# ── Animation ─────────────────────────────────────────────────────────────────
+# Reset
+def reset_scene (event = None):
+    if event is not None and event.key != 'r':
+        return
 
+    global t0, current_path
+    t0 = time.time ()
+
+    # Reset obstacles
+    for obs in scene.obstacles:
+        obs.update (0)
+
+    # Re-build initial path
+    new_path = scene.build_path ()
+    current_path = new_path
+
+    # Reset drone
+    drone.pos = scene.start.get_copy ()
+    drone.vel = Vec3D (0, 0, 0)
+    drone.accel = Vec3D (0, 0, 0)
+    drone.prev_time = None
+    drone.set_path (new_path)
+
+    # Update visuals
+    path_scatter[0].remove ()
+    path_scatter[0] = make_path_scatter (new_path)
+
+    for i, obs in enumerate (scene.obstacles):
+        obs_surfaces[i].remove ()
+        sx, sy, sz = create_sphere (obs.center, obs.radius)
+        obs_surfaces[i] = ax.plot_surface (sx, sy, sz, alpha = 0.6, color = 'red')
+
+    # Clear replan queue
+    while not replan_queue.empty ():
+        try:
+            replan_queue.get_nowait ()
+        except queue.Empty:
+            break
+
+fig.canvas.mpl_connect ('key_press_event', reset_scene)
+
+# Animation
 def update (_):
     t = time.time () - t0
 
